@@ -12,7 +12,11 @@ class Map
       end
     setup_board(w)
     @flag = []
+    @won = false
+  end
 
+  def win?
+    @won
   end
 
   def setup_board(w)
@@ -45,16 +49,16 @@ class Map
 
 
 
-  def set_flag(x,y)
-    flag << [x,y]
+  def set_flag(coord)
+    flag << coord
   end
 
-  def uncover(x,y)
-    if @mines.include?([x,y])
+  def uncover(coord)
+    if @mines.include?(coord)
       return -1
     end
-    zero_mine(x,y)
-
+    zero_mine(coord[0],coord[1])
+    return 0
   end
 
   def set_mines(number_of_mines, w )
@@ -104,6 +108,60 @@ class Map
     end
   end
 
+
+end
+
+class UI
+
+  def initialize()
+    puts "What board size would you like to play 9 or 16"
+    option = get.chomp.to_i
+
+    case option
+    when 16
+      @map =  Map.new(16)
+    else
+      @map = Map.new(9)
+    end
+
+  end
+
+  def menu
+    puts "1: uncover square"
+    puts "2: place flag"
+    puts "3: save"
+  end
+
+  def set_cord
+    puts "Enter x cordinates"
+    x=gets.chomp.to_i
+    puts "Enter y cordinates"
+    y=gets.chomp.to_i
+
+    [x,y]
+  end
+
+  def user_input
+    option = gets.chomp.to_i
+
+
+    case option
+    when 1
+      if uncover(set_cord) == -1
+        puts "You lose!"
+        exit
+      end
+    when 2
+      set_flag(set_cord)
+    when 3
+    else
+      puts "Invalid option"
+    end
+  end
+
+  def play
+
+  end
 
 end
 
