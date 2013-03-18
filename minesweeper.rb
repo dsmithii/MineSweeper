@@ -32,8 +32,7 @@ class Map
     print " "
     col_nums = []
     0.upto(@board.length - 1) {|col_num| col_nums << col_num}
-    print " "
-    p col_nums
+
     @board.each_with_index do |row,row_num|
       print "#{row_num}"
       p row
@@ -42,11 +41,18 @@ class Map
 
   end
 
+
+
+
   def set_flag(x,y)
 
   end
 
   def uncover(x,y)
+    if @mines.include?([x,y])
+      return -1
+    end
+
 
   end
 
@@ -57,7 +63,41 @@ class Map
       @mines << mine_location unless @mines.include?(mine_location)
     end
 
+
   end
+
+
+
+  def possible_moves(x,y)
+
+    w = @board.length
+    possible_moves = []
+    -1.upto(1) do |i|
+      -1.upto(1) do |j|
+        pos = [x+i,y+j] unless (x+i).between?(0,w-1) && (y+j).between?(0,w-1)
+        possible_moves << pos
+      end
+    end
+    possible_moves
+  end
+
+  def contains_mine(tiles)
+    count = 0
+    tiles.each do |location|
+      count += if @mines.include?(location)
+    end
+    count
+  end
+
+  def zero_mine(x,y)
+    if @mines.include([x,y])
+      return 1
+    else
+
+
+
+  end
+
 
 end
 
