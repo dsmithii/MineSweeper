@@ -1,10 +1,17 @@
 #mine - 1
+#
+
+require 'yaml'
+
+
 class Map
 
 
   def initialize(w)
     @mines = []
     @board = []
+    @flags = []
+    @won = 0
     case w
       when 9
         set_mines(10,w)
@@ -13,8 +20,7 @@ class Map
     end
     p @mines
     setup_board(w)
-    @flags = []
-    @won = 0
+
   end
 
   def win
@@ -145,17 +151,23 @@ end
 
 class UI
 
-  def initialize()
+  def initialize
     puts "What board size would you like to play 9 or 16"
     option = gets.chomp.to_i
-
-    case option
-    when 16
-      @map =  Map.new(16)
+   if ARGV.length == 0
+      case option
+      when 16
+        @map =  Map.new(16)
+      else
+        @map = Map.new(9)
+      end
     else
-      @map = Map.new(9)
+
+      @map = YAML::load( File.read(ARGV[0]) )
+      @map.display
     end
 
+     play
   end
 
   def menu
@@ -173,9 +185,23 @@ class UI
     [x,y]
   end
 
-  def user_input
-    option = gets.chomp.to_i
 
+  def sav_game
+    serial = @map.to_yaml
+    puts "Name your save file"
+    file_name = gets.chomp
+
+    f = File.open(file_name, 'w')
+    f.write(serial)
+    f.close
+
+
+  end
+
+
+  def user_input
+
+    option = gets#.chomp.to_i
 
     case option
     when 1
@@ -186,8 +212,10 @@ class UI
     when 2
       @map.set_flag(set_cord)
     when 3
+      sav_game
     else
       puts "Invalid option"
+
     end
   end
 
@@ -204,6 +232,8 @@ class UI
 end
 
 
+
 m = UI.new
-m.play
+
+
 
