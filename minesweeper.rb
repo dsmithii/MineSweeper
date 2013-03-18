@@ -16,9 +16,9 @@ class Map
 
   def setup_board(w)
     @board = []
-    1.times(w) do |i|
+    w.times do |i|
       row = []
-      1.times(w) do |j|
+      w.times do |j|
         row << :*
       end
       @board << row
@@ -27,15 +27,16 @@ class Map
 
 
 
-
   def display
-    print "\n---------------------------------------------------\n"
+    print "\n-----------------------------------------------------------------\n"
     print " "
-
-    0.upto(@board.length - 1) {|col_num| print "#{col_num}"}
-    print "\n"
-
+    col_nums = []
+    0.upto(@board.length - 1) {|col_num| col_nums << col_num}
+    print " "
+    p col_nums
     @board.each_with_index do |row,row_num|
+      print "#{row_num}"
+      p row
 
     end
 
@@ -60,5 +61,6 @@ class Map
 
 end
 
-
+m = Map.new(16)
+m.display
 
