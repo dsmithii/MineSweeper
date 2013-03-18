@@ -4,23 +4,50 @@ class Map
 
   def initialize(w)
     @mines = []
+    @board = []
     case w
       when 9
         set_mines(10,w)
       when 16
         set_mines(40,w)
-      end
+    end
+    p @mines
     setup_board(w)
-    @flag = []
-    @won = false
+    @flags = []
+    @won = 0
   end
 
-  def win?
+  def win
+    board_clear
+    if find_flag_mine_match && @mines.length == @flags.length && board_clear
+      @won=1
+      puts "You Win!"
+    end
+
     @won
+
+  end
+
+  def board_clear
+
+    @board.each do |row|
+      return false if row.include?(:*)
+    end
+
+    true
+  end
+
+  def find_flag_mine_match
+    @mines.each do |mine|
+      return false unless @flags.include?(mine)
+    end
+
+    true
+
   end
 
   def setup_board(w)
-    @board = []
+
     w.times do |i|
       row = []
       w.times do |j|
@@ -50,15 +77,32 @@ class Map
 
 
   def set_flag(coord)
-    flag << coord
+    @board[coord[1]][coord[0]] = "F"
+    @flags << coord
   end
 
   def uncover(coord)
     if @mines.include?(coord)
+      @won = -1
       return -1
     end
     zero_mine(coord[0],coord[1])
     return 0
+  end
+
+  def zero_mine(x,y)
+    possible = possible_moves(x,y)
+    surrounding = contains_mine(possible)
+    if @mines.include?([x,y])
+      return
+    elsif @board[y][x] != :*
+
+    elsif surrounding != 0
+      @board[y][x] = surrounding
+    else
+      @board[y][x] = :_
+      possible.each {|location| zero_mine(location[0],location[1])}
+    end
   end
 
   def set_mines(number_of_mines, w )
@@ -79,35 +123,23 @@ class Map
     possible_moves = []
     -1.upto(1) do |i|
       -1.upto(1) do |j|
-        pos = [x+i,y+j] unless (x+i).between?(0,w-1) && (y+j).between?(0,w-1)
-        possible_moves << pos
+        new_x = x+i
+        new_y = y+j
+        possible_moves << [new_x,new_y] if (new_x).between?(0,w-1) && (new_y).between?(0,w-1) && new_x > -1 && new_y > -1
       end
     end
+    possible_moves.delete([x,y])
     possible_moves
   end
 
   def contains_mine(tiles)
     count = 0
+
     tiles.each do |location|
-      count += if @mines.include?(location)
+      count += 1 if @mines.include?(location)
     end
     count
   end
-
-  def zero_mine(x,y)
-    possible = possible_moves(x,y)
-    surrounding = contains_mine(possible)
-    if @mines.include([x,y])
-      return
-    elsif @board[y][x] != :*
-    elsif surrounding != 0
-      @board[y][x] = surrounding
-    else
-      @board[y][x] = :_
-      possible.each {|location| zero_mine(location[0],location[1])}
-    end
-  end
-
 
 end
 
@@ -115,7 +147,7 @@ class UI
 
   def initialize()
     puts "What board size would you like to play 9 or 16"
-    option = get.chomp.to_i
+    option = gets.chomp.to_i
 
     case option
     when 16
@@ -147,12 +179,12 @@ class UI
 
     case option
     when 1
-      if uncover(set_cord) == -1
+      if @map.uncover(set_cord) == -1
         puts "You lose!"
         exit
       end
     when 2
-      set_flag(set_cord)
+      @map.set_flag(set_cord)
     when 3
     else
       puts "Invalid option"
@@ -161,10 +193,17 @@ class UI
 
   def play
 
+    while @map.win == 0
+      @map.board_clear
+      @map.display
+      menu
+      user_input
+    end
   end
 
 end
 
-m = Map.new(16)
-m.display
+
+m = UI.new
+m.play
 
