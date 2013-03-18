@@ -25,6 +25,9 @@ class Map
     end
   end
 
+
+
+
   def display
     print "\n---------------------------------------------------\n"
     print " "
