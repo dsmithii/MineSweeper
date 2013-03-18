@@ -11,6 +11,7 @@ class Map
         set_mines(40,w)
       end
     setup_board(w)
+    @flag = []
 
   end
 
@@ -45,14 +46,14 @@ class Map
 
 
   def set_flag(x,y)
-
+    flag << [x,y]
   end
 
   def uncover(x,y)
     if @mines.include?([x,y])
       return -1
     end
-
+    zero_mine(x,y)
 
   end
 
@@ -90,12 +91,17 @@ class Map
   end
 
   def zero_mine(x,y)
+    possible = possible_moves(x,y)
+    surrounding = contains_mine(possible)
     if @mines.include([x,y])
-      return 1
+      return
+    elsif @board[y][x] != :*
+    elsif surrounding != 0
+      @board[y][x] = surrounding
     else
-
-
-
+      @board[y][x] = :_
+      possible.each {|location| zero_mine(location[0],location[1])}
+    end
   end
 
 
