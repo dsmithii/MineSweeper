@@ -151,10 +151,11 @@ end
 
 class UI
 
-  def initialize
-    puts "What board size would you like to play 9 or 16"
-    option = gets.chomp.to_i
-   if ARGV.length == 0
+  def initialize(file = nil)
+
+   if file.nil?
+      puts "What board size would you like to play 9 or 16"
+      option = gets.chomp.to_i
       case option
       when 16
         @map =  Map.new(16)
@@ -163,11 +164,11 @@ class UI
       end
     else
 
-      @map = YAML::load( File.read(ARGV[0]) )
+      @map = YAML.load_file( file )
       @map.display
     end
 
-     play
+
   end
 
   def menu
@@ -201,7 +202,7 @@ class UI
 
   def user_input
 
-    option = gets#.chomp.to_i
+    option = gets.chomp.to_i
 
     case option
     when 1
@@ -230,10 +231,10 @@ class UI
   end
 
 end
+p ARGV
 
 
+m = UI.new(ARGV.pop)
 
-m = UI.new
-
-
+m.play
 
