@@ -1,5 +1,5 @@
 require 'yaml'
-
+#REV: nice this code looks really clean
 class Map
 
 
