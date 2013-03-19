@@ -21,6 +21,7 @@ class Map
 
   end
 
+
   def win
     board_clear
     if find_flag_mine_match && @mines.length == @flags.length && board_clear
@@ -31,14 +32,15 @@ class Map
     @won
   end
 
-  def board_clear
 
+  def board_clear
     @board.each do |row|
       return false if row.include?(:*)
     end
 
     true
   end
+
 
   def find_flag_mine_match
     @mines.each do |mine|
@@ -47,6 +49,7 @@ class Map
 
     true
   end
+
 
   def setup_board(w)
 
@@ -60,7 +63,6 @@ class Map
   end
 
 
-
   def display
     print "\n-----------------------------------------------------------------\n"
     print " "
@@ -72,9 +74,6 @@ class Map
 
     end
   end
-
-
-
 
   def set_flag(coord)
     @board[coord[1]][coord[0]] = "F"
@@ -154,6 +153,7 @@ class UI
    if file.nil?
       puts "What board size would you like to play 9 or 16"
       option = gets.chomp.to_i
+
       case option
       when 16
         @map =  Map.new(16)
@@ -164,8 +164,6 @@ class UI
       @map = YAML.load_file( file )
       @map.display
     end
-
-
   end
 
   def menu
