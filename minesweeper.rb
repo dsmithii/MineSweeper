@@ -164,12 +164,14 @@ class UI
       @map = YAML.load_file( file )
       @map.display
     end
+    @start = Time.now
   end
 
   def menu
     puts "1: uncover square"
     puts "2: place flag"
     puts "3: save"
+    puts "4: view high scores"
   end
 
   def set_cord
@@ -204,19 +206,32 @@ class UI
       @map.set_flag(set_cord)
     when 3
       sav_game
+    when 4
+      load_high_scores
     else
       puts "Invalid option"
     end
+  end
+
+  def load_high_scores
+    scores=[]
+    scores=File.readlines("highscore")
+    system("clear")
+    puts scores
+
   end
 
   def play
 
     while @map.win == 0
       @map.board_clear
+      system("clear")
       @map.display
       menu
       user_input
     end
+    final = Time.now - @start
+    puts "#{final.min}:#{final.sec}:#{final.usec} (min/sec/usec)"
   end
 end
 
