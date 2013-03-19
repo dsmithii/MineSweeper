@@ -1,8 +1,4 @@
-#mine - 1
-#
-
 require 'yaml'
-
 
 class Map
 
@@ -12,12 +8,14 @@ class Map
     @board = []
     @flags = []
     @won = 0
+
     case w
       when 9
         set_mines(10,w)
       when 16
         set_mines(40,w)
     end
+
     p @mines
     setup_board(w)
 
@@ -31,7 +29,6 @@ class Map
     end
 
     @won
-
   end
 
   def board_clear
@@ -49,7 +46,6 @@ class Map
     end
 
     true
-
   end
 
   def setup_board(w)
@@ -70,13 +66,11 @@ class Map
     print " "
     col_nums = []
     0.upto(@board.length - 1) {|col_num| col_nums << col_num}
-
     @board.each_with_index do |row,row_num|
       print "#{row_num}"
       p row
 
     end
-
   end
 
 
@@ -112,30 +106,34 @@ class Map
   end
 
   def set_mines(number_of_mines, w )
-
     while @mines.length < number_of_mines
       mine_location = [rand(w),rand(w)]
       @mines << mine_location unless @mines.include?(mine_location)
     end
-
-
   end
 
 
 
   def possible_moves(x,y)
-
     w = @board.length
     possible_moves = []
     -1.upto(1) do |i|
       -1.upto(1) do |j|
-        new_x = x+i
-        new_y = y+j
-        possible_moves << [new_x,new_y] if (new_x).between?(0,w-1) && (new_y).between?(0,w-1) && new_x > -1 && new_y > -1
+        possible_moves << [x+i,y+j] if dual_range_check(x+i,y+j)
       end
     end
     possible_moves.delete([x,y])
     possible_moves
+  end
+
+  def dual_range_check(x,y)
+    return range_check(x) && range_check(y)
+  end
+
+  def range_check(num)
+    return false unless num.between?(0, @board.length-1)
+    return false if num < 0
+    true
   end
 
   def contains_mine(tiles)
@@ -163,7 +161,6 @@ class UI
         @map = Map.new(9)
       end
     else
-
       @map = YAML.load_file( file )
       @map.display
     end
@@ -191,19 +188,14 @@ class UI
     serial = @map.to_yaml
     puts "Name your save file"
     file_name = gets.chomp
-
     f = File.open(file_name, 'w')
     f.write(serial)
     f.close
-
-
   end
 
 
   def user_input
-
     option = gets.chomp.to_i
-
     case option
     when 1
       if @map.uncover(set_cord) == -1
@@ -216,7 +208,6 @@ class UI
       sav_game
     else
       puts "Invalid option"
-
     end
   end
 
@@ -229,9 +220,7 @@ class UI
       user_input
     end
   end
-
 end
-p ARGV
 
 
 m = UI.new(ARGV.pop)
