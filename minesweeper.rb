@@ -1,9 +1,10 @@
 require 'yaml'
-
+# overall this was very clearly written, but watch the lines of whitespace
 class Map
-
+  # way too much whitespace goin on
 
   def initialize(w)
+    # use parralel assignment: @mines, @boards, @flags = []
     @mines = []
     @board = []
     @flags = []
@@ -18,10 +19,10 @@ class Map
 
     p @mines
     setup_board(w)
-
+    # no no no whitespace
   end
 
-
+  # you only need one line of space between functions
   def win
     board_clear
     if find_flag_mine_match && @mines.length == @flags.length && board_clear
@@ -32,7 +33,7 @@ class Map
     @won
   end
 
-
+  # true/false validation functions typically include a question mark
   def board_clear
     @board.each do |row|
       return false if row.include?(:*)
@@ -71,7 +72,7 @@ class Map
     @board.each_with_index do |row,row_num|
       print "#{row_num}"
       p row
-
+      # stop the whitespace madness
     end
   end
 
@@ -86,7 +87,7 @@ class Map
       return -1
     end
     zero_mine(coord[0],coord[1])
-    return 0
+    return 0 # don't need the explicit return here
   end
 
   def zero_mine(x,y)
@@ -95,7 +96,7 @@ class Map
     if @mines.include?([x,y])
       return
     elsif @board[y][x] != :*
-
+      # case here? if you're just nexting, to next if ....
     elsif surrounding != 0
       @board[y][x] = surrounding
     else
@@ -111,12 +112,12 @@ class Map
     end
   end
 
-
+  # white space white space white space
 
   def possible_moves(x,y)
     w = @board.length
     possible_moves = []
-    -1.upto(1) do |i|
+    -1.upto(1) do |i| # a range would be more semantic here (-1..1).each do
       -1.upto(1) do |j|
         possible_moves << [x+i,y+j] if dual_range_check(x+i,y+j)
       end
@@ -126,7 +127,7 @@ class Map
   end
 
   def dual_range_check(x,y)
-    return range_check(x) && range_check(y)
+    return range_check(x) && range_check(y) # explicit return is unnecessary here
   end
 
   def range_check(num)
@@ -143,13 +144,13 @@ class Map
     end
     count
   end
-
+# WHITESPACE
 end
 
 class UI
 
   def initialize(file = nil)
-
+    # no no no no no whitespace
    if file.nil?
       puts "What board size would you like to play 9 or 16"
       option = gets.chomp.to_i
